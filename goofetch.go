@@ -79,6 +79,14 @@ func readLogoFile(filename string) string {
 	return string(data)
 }
 
+func printTerminalColorsInline() string {
+	colorStf := "\033[1;34m\033[0m "
+	for _, color := range ansiColors {
+		colorStf += fmt.Sprintf("\033[48;5;%dm  \033[0m", color)
+	}
+	return colorStf
+}
+
 func main() {
 	hostname := runCommand("hostname")
 	username := runCommand("whoami")
@@ -86,8 +94,8 @@ func main() {
 	distro := getDistro()
 	uptime := runCommand("uptime", "-p")
 	shell := runCommand("basename", os.Getenv("SHELL"))
-	cpu := runCommand("sh", "-c", "lscpu | awk -F': ' '/Model name/ {print $2}' | sed 's/^[ \t]*//'")
-	memory := runCommand("sh", "-c", `free -m | awk 'NR==2{printf "%.2f GiB / %.2f GiB (%.0f%%)\n", $3/1024, $2/1024, $3/$2*100}'`)
+	//	cpu := runCommand("sh", "-c", "lscpu | awk -F': ' '/Model name/ {print $2}' | sed 's/^[ \t]*//'")
+	//	memory := runCommand("sh", "-c", `free -m | awk 'NR==2{printf "%.2f GiB / %.2f GiB (%.0f%%)\n", $3/1024, $2/1024, $3/$2*100}'`)
 	wm := runCommand("sh", "-c", `ps -e | grep -oE 'i3|kwin|mutter|openbox|awesome|fluxbox|xmonad|sway|bspwm|qtile|dwm|hyprland' | head -n 1`)
 
 	packageManager, packageCommand := getPackageManager(distro)
@@ -106,15 +114,16 @@ func main() {
 	   	fmt.Println("", memory) */
 
 	sysInfo := []string{
-		fmt.Sprintf(" %s@%s", username, hostname),
-		fmt.Sprintf(" %s", distro),
-		fmt.Sprintf("󰌽 %s", kernel),
-		fmt.Sprintf(" %s", wm),
-		fmt.Sprintf(" %s", shell),
-		fmt.Sprintf(" %s (%s)", packageCount, packageManager),
-		fmt.Sprintf("󰅶 %s", uptime),
-		fmt.Sprintf(" %s", cpu),
-		fmt.Sprintf(" %s", memory),
+		fmt.Sprintf("\033[1;34m\033[0m %s@%s", username, hostname),
+		fmt.Sprintf("\033[1;34m\033[0m %s", distro),
+		fmt.Sprintf("\033[1;34m󰌽\033[0m %s", kernel),
+		fmt.Sprintf("\033[1;34m\033[0m %s", wm),
+		fmt.Sprintf("\033[1;34m\033[0m %s", shell),
+		fmt.Sprintf("\033[1;34m\033[0m %s (%s)", packageCount, packageManager),
+		fmt.Sprintf("\033[1;34m󰅶\033[0m %s", uptime),
+		printTerminalColorsInline(),
+		//		fmt.Sprintf(" %s", cpu),
+		//		fmt.Sprintf(" %s", memory),
 	}
 
 	maxLines := len(asciiArt)
@@ -135,7 +144,5 @@ func main() {
 
 		fmt.Printf("%-18s %s\n", asciiPart, sysPart)
 	}
-
-	printTerminalColors()
 
 }
