@@ -135,7 +135,7 @@ func main() {
 		var asciiPart, sysPart string
 
 		if i < len(asciiArt) {
-			asciiPart = asciiArt[i]
+			asciiPart = fmt.Sprintf("\033[1;34m%-18s\033[0m", asciiArt[i])
 		}
 
 		if i < len(sysInfo) {
